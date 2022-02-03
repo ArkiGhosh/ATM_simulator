@@ -3,6 +3,7 @@ from constants import CREATE_ACCOUNT, DEPOSIT_MONEY, DISPLAY_BALANCE, EXIT, SEND
 import csv
 import random
 
+filename = r'ATM Simulator\account_info.csv'
 
 #All the information related to a particular user stored in a csv file
 #as the bank's database
@@ -83,17 +84,17 @@ def send_money():
     print("Please enter recipient's account number: ", end = "")
     r_acc = input()
 
-    print("Please enter IFSC code: ", end = "")
+    print("Please enter IFSC code of the recipient: ", end = "")
     ifsc = input()
 
-    print("Please enter the branch code: ", end = "")
+    print("Please enter the branch code of the recipient: ", end = "")
     branch_cd = input()
 
     print("Enter the amount to be transferred")
     amt = int(input())
 
     #checking whether the sender has sufficient balance
-    with open('account_info.csv', 'r') as file:
+    with open(filename, 'r') as file:
         reader = csv.DictReader(file)
         for i in reader:
             if (i["account_no"] == sender) and (i["pins"] == send_pin):
@@ -107,7 +108,7 @@ def send_money():
                         t_otp = input()
 
                         #updating sender's and receiver's balance 
-                        r = csv.reader(open('account_info.csv'))
+                        r = csv.reader(open(filename))
                         lines = list(r)
                         for j in lines:
                             if (j[1] == sender) and (j[2] == send_pin):
@@ -116,7 +117,7 @@ def send_money():
                                 j[3] = int(j[3]) + amt
                         
                         # duplicate code, make a function writerows() which handles the open, write and close.
-                        tru = open('account_info.csv', 'w', newline = "")
+                        tru = open(filename, 'w', newline = "")
                         writer = csv.writer(tru)
                         writer.writerows(lines)
                         tru.close()
@@ -196,7 +197,7 @@ class Account():
     def new_acc_info(self):
         acc_num, pin, ifsc_c, branch_c = [random.randint(10000, 99999), random.randint(1000, 9999), random.randint(1000, 9999), random.randint(1000, 9999)]
         
-        with open('account_info.csv', 'a', newline = "") as file:
+        with open(filename, 'a', newline = "") as file:
             write = csv.writer(file)
             write.writerow([self.name, acc_num, pin, 0, ifsc_c, branch_c, self.atype, self.mb_num, self.emailID, self.nomin])
         return [self.name, acc_num, pin, 0, ifsc_c, branch_c, self.atype, self.mb_num, self.emailID, self.nomin]
@@ -208,7 +209,7 @@ class Account():
     def transfer_info(self, lis):
         recip_name, recip_acc_no, ifsc, branch = lis
 
-        with open('account_info.csv', 'r') as file:
+        with open(filename, 'r') as file:
             reader = csv.DictReader(file)
             t = 0
             for i in reader:
@@ -231,7 +232,7 @@ class Account():
 
     #display function
     def display(self):
-        with open('account_info.csv', 'r') as file:
+        with open(filename, 'r') as file:
             reader = csv.DictReader(file)
             t = 0
             for i in reader:
@@ -251,7 +252,7 @@ class Account():
         # amount not validated
         
         # duplicate code, better to make an update function which will change amount of account by passed in parameters
-        r = csv.reader(open('account_info.csv'))
+        r = csv.reader(open(filename))
         lines = list(r)
         t = 0
 
@@ -263,7 +264,7 @@ class Account():
                     t = 1
                     i[3] = int(i[3]) - amt
     
-        rdfile = open('account_info.csv', 'w', newline = "")
+        rdfile = open(filename, 'w', newline = "")
         writer = csv.writer(rdfile)
         writer.writerows(lines)
         rdfile.close()
@@ -281,7 +282,7 @@ class Account():
         print("Enter the amount you want to deposit: ", end = "")
         amt = int(input())
 
-        r = csv.reader(open('account_info.csv'))
+        r = csv.reader(open(filename))
         lines = list(r)
         t = 0
 
@@ -290,7 +291,7 @@ class Account():
                 i[3] = int(i[3]) + amt
                 t = 1
 
-        rdfile = open('account_info.csv', 'w', newline = "")
+        rdfile = open(filename, 'w', newline = "")
         writer = csv.writer(rdfile)
         writer.writerows(lines)
         rdfile.close()
